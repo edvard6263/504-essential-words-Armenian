@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>504 essential words </title>
+  <style>
+    #bg-transition {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+      background: white;
+      opacity: 0;
+      transition: opacity 0.7s cubic-bezier(.4,2,.3,1);
+    }
+    .result-correct {
+      color: white;
+      background: #26ac5c;
+      border-radius: 8px;
+      padding: 8px 0;
+      box-shadow: 0 2px 8px #14532d22;
+      animation: resultAppear 0.5s cubic-bezier(.4,2,.3,1);
+    }
+    .result-info {
+      color: white;
+      background: #3565eb;
+      border-radius: 8px;
+      padding: 8px 0;
+      box-shadow: 0 2px 8px #1e3a8a22;
+      animation: resultAppear 0.5s cubic-bezier(.4,2,.3,1);
+    }
+    .result-wrong {
+      color: white;
+      background: #e43434;
+      border-radius: 8px;
+      padding: 8px 0;
+      box-shadow: 0 2px 8px #7f1d1d22;
+      animation: resultAppear 0.5s cubic-bezier(.4,2,.3,1);
+    }
+    @keyframes resultAppear {
+      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+      80% { opacity: 1; transform: scale(1.05) translateY(-2px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes buttonPress {
+      0% { transform: scale(1); }
+      50% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+    body {
+      width: 100vw;
+      height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  color: #fff;
+  transition: background 0.7s cubic-bezier(.4,2,.3,1), color 0.7s cubic-bezier(.4,2,.3,1);
+    }
+    .card {
+      background: rgba(30,30,30,0.95);
+      padding: 60px 24px 40px 24px;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+      text-align: center;
+      max-width: 450px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+      backdrop-filter: blur(2px);
+      transition: box-shadow 0.3s, background 0.3s;
+    }
+    #armenian {
+      font-size: 38px;
+      margin-bottom: 30px;
+      color: #ffd700;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #000a;
+      transition: color 0.3s;
+    }
+    input {
+      padding: 20px;
+      width: 80%;
+      border: 1px solid #444;
+      border-radius: 12px;
+      margin: 10px auto 20px auto;
+      box-sizing: border-box;
+      display: block;
+      background: #222;
+      color: #fff;
+      font-size: 20px;
+      transition: border-color 0.2s, background 0.3s;
+    }
+    input:focus {
+      border-color: #ffd700;
+      outline: none;
+      background: #333;
+    }
+    button {
+      margin-top: 15px;
+      padding: 20px 0;
+      border: none;
+      background: linear-gradient(90deg, #111 60%, #333 100%);
+      color: #ffd700;
+      font-size: 20px;
+      font-weight: 600;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 320px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px #000a;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      will-change: transform;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #ffd700 60%, #333 100%);
+      color: #111;
+      box-shadow: 0 4px 16px #ffd70044;
+      transform: scale(1.05);
+    }
+    button:active {
+      animation: buttonPress 0.2s;
+    }
+    #result {
+      margin-top: 25px;
+      font-weight: bold;
+      color: #ffd700;
+      min-height: 32px;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #000a;
+      transition: color 0.3s;
+    }
+    #bg-transition {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+      background: white;
+      opacity: 0;
+      transition: opacity 0.7s cubic-bezier(.4,2,.3,1);
+    }
+  </style>
+
+</head>
+<body>
+  <div id="bg-transition"></div>
+    <audio id="audio-click" src="click.mp3" preload="auto"></audio>
+    <audio id="audio-correct" src="correct.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="wrong.mp3" preload="auto"></audio>
+  <div style="text-align:center; margin-bottom:10px;">
+    <button id="theme-toggle" style="font-size:16px; padding:6px 18px; border-radius:8px; border:none; background:#333; color:#ffd700; cursor:pointer; margin-bottom:8px;">🌙 Dark</button>
+  </div>
+  <div id="score-streak" style="text-align:center; margin-bottom:18px; font-size:20px; font-weight:500;"></div>
+  <div class="card">
+    <div id="armenian">Press "Next Word" to start</div>
+    <input type="text" style="font-size: 20px;" id="answer" placeholder="Type here">
+    <br>
+    <button onclick="checkAnswer()">Check</button>
+    <button onclick="nextWord()">Next Word</button>
+    <div style="margin-top:10px;">
+      <input id="lesson-input" type="text" placeholder="Lesson(s) 7 or 3-20 or 1,4,1-12" style="width:80%; max-width:320px;">
+      <button id="apply-lesson-btn" style="margin-top:8px;">Apply Lessons</button>
+      <button id="go-back-btn" style="margin-top:8px; display:none;">Go Back</button>
+      <div id="active-lessons" style="margin-top:6px; font-size:14px; color:#ffd700;"></div>
+    </div>
+    <div id="result"></div>
+  <div style="display:flex; justify-content:space-between; margin:32px 0 0 0; width:100%; max-width:900px;">
+    <div id="correct-list" style="width:48%; background:#1a3c2b; border-radius:10px; padding:12px; width: 300px; height: 100px; border: 1px transparent; overflow: scroll; overflow-x: hidden; scrollbar-color: rgb(1, 94, 15) rgb(87, 139, 76);
+  scrollbar-width: thin;">
+      <b style="color:#26ac5c;">Correct</b>
+      <ul id="correct-words" style="padding-left:18px; margin-top:8px;"></ul>
+    </div>
+    <div id="wrong-list"   style="width:48%; background:#3c1a1a; border-radius:10px; padding:12px; width: 300px; height: 100px; border: 1px transparent; overflow: scroll; overflow-x: hidden; scrollbar-color: rgb(108, 0, 0) rgb(123, 59, 59);
+  scrollbar-width: thin;">
+      <b style="color:#e43434;">Wrong</b>
+      <ul id="wrong-words" style="padding-left:18px; margin-top:8px;"></ul>
+      <div style="text-align:center; margin-top:10px;">
+        <button id="revise-btn" style="padding:8px 18px; font-size:16px; border-radius:8px; background:#ffd700; color:#222; border:none; cursor:pointer; display:none;">Revise Words</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    function playClick() {
+      document.getElementById('audio-click').currentTime = 0;
+      document.getElementById('audio-click').play();
+    }
+    function playCorrect() {
+      document.getElementById('audio-correct').currentTime = 0;
+      document.getElementById('audio-correct').play();
+    }
+    function playWrong() {
+      document.getElementById('audio-wrong').currentTime = 0;
+      document.getElementById('audio-wrong').play();
+    }
+    // Theme toggle logic
+    const themeToggle = document.getElementById("theme-toggle");
+    let darkMode = true;
+    const bgTransition = document.getElementById("bg-transition");
+    themeToggle.addEventListener("click", function() {
+  darkMode = !darkMode;
+  playClick();
+      if (!darkMode) {
+        // Animate white overlay
+        bgTransition.style.opacity = "1";
+        setTimeout(() => {
+          document.body.style.background = "linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)";
+          document.body.style.color = "#222";
+          themeToggle.innerHTML = "☀️ Light";
+          themeToggle.style.background = "#ffd700";
+          themeToggle.style.color = "#333";
+          bgTransition.style.opacity = "0";
+          bgTransition.style.zIndex = "-1"
+        }, 400);
+      } else {
+        document.body.style.background = "linear-gradient(135deg, #232526 0%, #414345 100%)";
+        document.body.style.color = "#fff";
+        themeToggle.innerHTML = "🌙 Dark";
+        themeToggle.style.background = "#333";
+        themeToggle.style.color = "#ffd700";
+        
+      }
+    });
+    document.getElementById("answer").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        playClick();
+        checkAnswer();
+      }
+    });
+    function typeWriter(text) {
+      const el = document.getElementById("armenian");
+      el.innerText = "";
+      let i = 0;
+      function type() {
+        if (i < text.length) {
+          el.innerText += text.charAt(i);
+          i++;
+          setTimeout(type, 55);
+        }
+      }
+      type();
+    }
+    const words = [
+      { en: "abandon", hy: "լքել", ex: "Desert, leave without planning to come back" },
+      { en: "keen", hy: "սուր", ex: "Sharp, eager, intense, sensitive" },
+      { en: "jealous", hy: "նախանձ, խանդոտ", ex: "Afraid that the one you love might prefer someone else; wanting what someone else has" },
+      { en: "tact", hy: "տակտ", ex: "Ability to say the right thing" },
+      { en: "oath", hy: "երդում", ex: "A promise that something is true; a curse" },
+      { en: "vacant", hy: "դատարկ, ազատ", ex: "Empty, not filled" },
+      { en: "hardship", hy: "դժվարություն", ex: "Something that is hard to bear, difficulty" },
+      { en: "gallant", hy: "քաջ, հարգալից", ex: "Brave, showing respect for women" },
+      { en: "data", hy: "ինֆորմացիա", ex: "Facts, information" },
+      { en: "unaccustomed", hy: "սովոր չլինել", ex: "not used to do something" },
+      { en: "bachelor", hy: "չամուսնացած տղամարդ", ex: "A man who has not married" },
+      { en: "qualify", hy: "որակավորում", ex: "show that you are able" },
+      { en: "corpse", hy: "դիակ", ex: "a dead body, usually of a person" },
+      { en: "conceal", hy: "թաքցնել", ex: "hide" },
+      { en: "dismal", hy: "մութ, մռայլ", ex: "dark and depressing" },
+      { en: "frigit", hy: "սառնամանիք", ex: "very cold" },
+      { en: "inhabit", hy: "բնակվել", ex: "live in" },
+      { en: "numb", hy: "թմրած", ex: "without power of feeling, deadened" },
+      { en: "peril", hy: "վտանգ", ex: "danger" },
+      { en: "recline", hy: "պառկել/թեքվել/հենվել", ex: "lie down, stretch out, lean back" },
+      { en: "shriek", hy: "աղմուկ", ex: "scream" },
+      { en: "sinister", hy: "չարագործ", ex: "evil, wicked, dishonest, frightening" },
+      { en: "tempt", hy: "գայթակղել", ex: "try to get someone to do something, test, invite" },
+      { en: "wager", hy: "գռազ", ex: "bet" },
+      { en: "typical", hy: "տիպիկ", ex: "usual, of a kind" },
+      { en: "minimum", hy: "մինիմում, ամենաքիչը", ex: "the least possible amount, the lowest amount" },
+      { en: "scarce", hy: "հազվագյուտ", ex: "hard to get, rare" },
+      { en: "annual", hy: "տարեկան", ex: "once a year, something that appears yearly or lasts for a year" },
+      { en: "persuade", hy: "ստիպել", ex: "win over to do or believe, make willing" },
+      { en: "essential", hy: "կարևոր, անհրաժեշտ", ex: "necessary, very important" },
+      { en: "blend", hy: "խառնել, խառնուրդ", ex: "mix toghether thoroughly, a mixture" },
+      { en: "visible", hy: "տեսանելի", ex: "able to be seen" },
+      { en: "expensive", hy: "թանկ", ex: "high priced" },
+      { en: "beau", hy: "ընկեր", ex: "boyfriend, suitor" },
+      { en: "devise", hy: "հնարել", ex: "think out, plan, invent" },
+      { en: "wholesale", hy: "մեծածախս", ex: "in large quantity, less than retail in price" },
+      { en: "vapor", hy: "մառախուղ/գոլոշի", ex: "moisture, in the air that can be seen, fog, mist" },
+      { en: "elinimate", hy: "բաժանել, հեռացնել", ex: "get rid of, remove, omit" },
+      { en: "villain", hy: "չարագործ", ex: "a vey wicked person" },
+      { en: "dense", hy: "խիտ", ex: "closely packed together, thick" },
+      { en: "utilize", hy: "օգտագործել", ex: "make use of" },
+      { en: "humid", hy: "խոնավ", ex: "moist, damp" },
+      { en: "theory", hy: "տեսություն", ex: "explanation based on thought" },
+      { en: "descend", hy: "իջնել", ex: "go or come down froom a higher place to a lower level" },
+      { en: "circulate", hy: "տարածվել", ex: "go around, go from place to place or person to person" },
+      { en: "enormous", hy: "հսկա, շատ մեծ", ex: "extremly large, huge" },
+      { en: "predict", hy: "կանխագուշակել", ex: "tell beforehead" },
+      { en: "vanish", hy: "անհետանալ", ex: "disappear, disappear suddenly" },
+      { en: "tradition", hy: "սովորույթ", ex: "beliefs, opinions, and customs handed down from one generation to another" },
+      { en: "rural", hy: "գյուղական", ex: "in the country" },
+      { en: "burden", hy: "բեռ", ex: "what is carried, a load" },
+      { en: "campus", hy: "տարածք, մասնաշենք", ex: "grounds of a college, university, or school" },
+      { en: "majority", hy: "մեծամասնություն", ex: "the larger number, greater part, more than a half" },
+      { en: "assemble", hy: "հավաքվել", ex: "gather together" },
+      { en: "explore", hy: "ուսումնասիրել", ex: "go over carefully, lok into closely, examine" },
+      { en: "topic", hy: "թեմա", ex: "that people think, look into cloesely, " },
+      { en: "debate", hy: "բանավեճ", ex: "a discussion in which reasons for and against smth are brought in" },
+      { en: "evade", hy: "խուսափել", ex: "get away from by trickery or cleverness" },
+      { en: "probe", hy: "հետաքննություն", ex: "search into, examine thoroughly, investigate" },
+      { en: "reform", hy: "բարեփոխել", ex: "make better, improve by removing faults" },
+      { en: "approach", hy: "մոտենալ", ex: "come near or nearer to" },
+      { en: "detect", hy: "հայտնաբերել, բացահայտել", ex: "find out, discover" },
+      { en: "defect", hy: "արատ, սխալ", ex: "fault, that which is wrong" },
+      { en: "employee", hy: "աշխատող", ex: "a person who works for pay" },
+      { en: "neglect", hy: "անտեսել, արհամարել", ex: "give too little care or attention to" },
+      { en: "decieve", hy: "խաբել", ex: "make someone believe as true smth that is false, mislead" },
+      { en: "undoubtedly", hy: "անկասկած", ex: "certainly, beyond doubt" },
+      { en: "popular", hy: "հայտնի", ex: "liked by most people" },
+      { en: "thorough", hy: "մանրակրկիտ", ex: "being all that is needed, complete" },
+      { en: "client", hy: "հաճախորդ/վստահորդ", ex: "person for whom a lawyer acts, customer" },
+      { en: "comprehensive", hy: "բազմակողմանի, ծավալուն", ex: "includingg much, coverin completely" },
+      { en: "defraud", hy: "խաբեություն", ex: "take money, rights etc ...away by cheating" },
+      { en: "postpone", hy: "հետաձքել", ex: "put off to a later timer, delay" },
+      { en: "consent", hy: "համաձայնություն", ex: "agree, give permission or approval" },
+      { en: "massive", hy: "խոշոր", ex: "big and heavy, large and solid, bulky" },
+      { en: "capsule", hy: "կապսուլա, տարրա", ex: "a small case or covering" },
+      { en: "preserve", hy: "պահպանել", ex: "keep from harm or change, keep safe, protect" },
+      { en: "denounce", hy: "մեղադրել", ex: "condemn in public, express strong disapproval of" },
+      { en: "unique", hy: "եզակի", ex: "having no like or equal, being the only one of its kind" },
+      { en: "torrent", hy: "մեծ քանակությամբ", ex: "any violent, rushing stream, flood" },
+      { en: "resent", hy: "վիրավորել", ex: "feel injured and angered at smth" },
+      { en: "molest", hy: "անհանգստացնել", ex: "interfere with and trouble, disturb" },
+      { en: "gloomy", hy: "մռայլ", ex: "dark, dim, in low spirits" },
+      { en: "unforeseen", hy: "չնախատեսված", ex: "not known beforehand, unexpected" },
+      { en: "exaggerate", hy: "չափազանցնել", ex: "make smth greater than it is, overstate" },
+      { en: "amateur", hy: "մարդ, ով անում է որևէ բան սիրողական", ex: "person who does smth for pleasure, not for money or as a profession " },
+      { en: "mediocre", hy: "միջակ, միջին", ex: "neither good nor bad, average, ordinary" },
+      { en: "variety", hy: "բազմազանություն", ex: "lack of smaness, a number of different things" },
+      { en: "valid", hy: "վավերական", ex: "supported by facts or authority, sound, true" },
+      { en: "survive", hy: "գոյատևել, փրկվել", ex: "live longer than, remain alive after" },
+      { en: "weird", hy: "տարօրինակ", ex: "mysterious, unearthy" },
+      { en: "prominent", hy: "հայտնի", ex: "well-known, important" },
+      { en: "security", hy: "անվտանգություն", ex: "freedom from danger, care, or fear, feeling or condition of being safe" },
+      { en: "bulky", hy: "մեծ տեղ զբաղեցնող", ex: "taking up much space, large" },
+      { en: "reluctant", hy: "չտրամադրված", ex: "unwilling" },
+      { en: "obvious", hy: "ակնհայտ", ex: "easily seen or understood, clear to the eye or mind, not tobe doubted, plain" },
+      { en: "vicinity", hy: "մոտակայք", ex: "near a place, neighborhood" },
+      { en: "century", hy: "դար", ex: "100 years" },
+      { en: "rage", hy: "կատաղություն", ex: "violent anger, smth that arouses intense but brief enthusiasm" },
+      { en: "document", hy: "փաստաթուղթ", ex: "smth handwritten or printed that gives information or proof of some fact" },
+      { en: "conclude", hy: "ավարտել, որոշել", ex: "end, finish, decide" },
+      { en: "undeniable", hy: "անքննելի, անհերքելի", ex: "not to be denied, cannot be questioned" },
+      { en: "resist", hy: "դիմադրել, հակառակվել", ex: "act against, strive against, oppose" },
+      { en: "lack", hy: "պակասություն", ex: "be entirely without smth, have not enough" },
+      { en: "ignore", hy: "անտեսել, արհամարել", ex: "pay no attention to, disregard" },
+      { en: "challange", hy: "մարտահրավեր", ex: "call to fight" },
+      { en: "miniature", hy: "որևէ բանի փոքրիկ տեսակը, տարբերակը", ex: "represented on a small scale" },
+      { en: "source", hy: "աղբյուր", ex: "place from which smth comes or is obtained" },
+      { en: "excel", hy: "գերազանցել", ex: "be better than, do better than" },
+      { en: "feminine", hy: "կանացի", ex: "of women or girls" },
+      { en: "mount", hy: "բարձրանալ, լեռ", ex: "get up on" },
+      { en: "compete", hy: "մրցակցել, պայքարել", ex: "try hard to get smth wanted by others, be a rival" },
+      { en: "dread", hy: "սարսափելի", ex: "look forward to with fear, fear greatly, causing great fear" },
+      { en: "masculine", hy: "տղամարդկային", ex: "of man, male" },
+      { en: "menace", hy: "վտանգ, սպառնալիք", ex: "threat" },
+      { en: "tendency", hy: "հակում, միտում", ex: "leaning, movement in a certain direction" },
+      { en: "underestimate", hy: "թերագնահատել", ex: "set too low a vale, amount or rate" },
+      { en: "victorius", hy: "հաղթական", ex: "having won a victory, conquering" },
+      { en: "numerous", hy: "բազմաթիվ", ex: "very many several" },
+      { en: "flexible", hy: "ճկուն", ex: "easily bent, willing to yield" },
+      { en: "evidence", hy: "փաստ, ապացույց", ex: "that which makes clear the truth or falsehood of smth" },
+      { en: "solitary", hy: "միակ", ex: "along, single, only" },
+      { en: "vision", hy: "տեսողություն", ex: "power of seeing, sense of sight" },
+      { en: "frequent", hy: "հաճախ", ex: "happening often, occuring repeatedely" },
+      { en: "glimpse", hy: "հայացք", ex: "a short, quick view" },
+      { en: "recent", hy: "վերջերս", ex: "done, made or occuring not long ago" },
+      { en: "decade", hy: "տասնամյակ", ex: "10 years" },
+      { en: "hesitate", hy: "տատանվել, վարանել", ex: "fail to act quickly, be undecided" },
+      { en: "absurd", hy: "անհեթեթություն", ex: "plainly not true or sensible, foolish" },
+      { en: "conflict", hy: "կոնֆլիկտ", ex: "direct opposition, disagreement" },
+      { en: "minority", hy: "փոքրամասնություն", ex: "smaller number of part, less than half" },
+      { en: "fiction", hy: "հորինվածք", ex: "that which is imagined or made up" },
+      { en: "ignite", hy: "վառվել", ex: "set on fire" },
+      { en: "abolish", hy: "վերջ տալ", ex: "Do away with completely, put an end to" },
+      { en: "urban", hy: "քաղաքային", ex: "Of or having to do with cities or towns" },
+      { en: "population", hy: "բնակչություն", ex: "People of a city or country" },
+      { en: "frank", hy: "անկեղծ", ex: "Free in expressing one's real thoughts, opinions, or feelings, not hiding what is in one's mind " },
+      { en: "pollute", hy: "աղտոտել", ex: "make dirty" },
+      { en: "reveal", hy: "բացահայտել", ex: "make known" },
+      { en: "prohibit", hy: "արգելել", ex: "forbid by law or authority" },
+      { en: "urgent", hy: "հրատապ, շտապ", ex: "demanding immediete action or attention, important" },
+      { en: "adequate", hy: "բավարար, համարժեք", ex: "as much as is needed, fully sufficient" },
+      { en: "decrease", hy: "նվազեցնել", ex: "make or become less" },
+      { en: "audible", hy: "լսելի", ex: "Able to be heard" },
+      { en: "journalist", hy: "լրագրող", ex: "one who writes for, edits or produces a newspaper or magazine" },
+      { en: "famine", hy: "սով", ex: "starvation, great shortage" },
+      { en: "revive", hy: "վերակենդանանալ", ex: "bring back or come back to life or consciousness" },
+      { en: "commence", hy: "սկսել", ex: "begin, start" },
+      { en: "observant", hy: "ուշադիր", ex: "quick to notice, watchful" },
+      { en: "identify", hy: "ճանաչել", ex: "recognize as being, or show to be, a certain person or thing, prove to be the same" },
+      { en: "migrate", hy: "գաղթել", ex: "move from one place to another" },
+      { en: "vessel", hy: "նավ", ex: "a ship, a hollow container, tube containing" },
+      { en: "persist", hy: "շարունակել", ex: "ccontinue firmly, refuse to stop or be changed" },
+      { en: "hazy", hy: "մշուշոտ", ex: "misty, smoky, unclear" },
+      { en: "gleam", hy: "կայծ, փայլ", ex: "a flash or beam of light" },
+      { en: "editor", hy: "խմբագրող", ex: "person who prepares a publication, one who corrects a manuscript and helps to improve it" },
+      { en: "unruly", hy: "անկառավարելի", ex: "hard to rule or control, lawless" },
+      { en: "rival", hy: "մրցակից", ex: "who wants and tries to get the same thing as another, one who tries to equal or do better than another"},
+      { en: "violent", hy: "դաժան, կոպիտ", ex: "acting or done with strong, rough force" },
+      { en: "brutal", hy: "ծանր, դաժան", ex: "coarse and savage, like a brute, cruel" },
+      { en: "opponent", hy: "հակառակորդ", ex: "person who in on the other side of a fight, game or discussion" },
+      { en: "brawl", hy: "կռիվ, հակամարտություն", ex: "a noisy quarrel or fight" },
+      { en: "duplicate", hy: "կրկնօրինակել", ex: "an exact copy, make an exact copy of, repeat exactly" },
+      { en: "vicious", hy: "չար", ex: "evil, wicked, savage" },
+      { en: "whirling", hy: "պտտվող", ex: "turning or swinging round and round, spinning" },
+      { en: "underdog", hy: "անհաջողակ", ex: "person having the worst of any struggle, one who is expected to lose" },
+      { en: "thrust", hy: "բրթել, խծկել", ex: "push with force" },
+      { en: "bewildered", hy: "շփոթված", ex: "confused completely, puzzled" },
+      { en: "expand", hy: "մեծացնել, ընդարձակել", ex: "increase in size, enlarge, swell" },
+      { en: "alter", hy: "տեղափոխել", ex: "change, make different, vary" },
+      { en: "mature", hy: "հասուն", ex: "fully grown or developed" },
+      { en: "sacred", hy: "սուրբ", ex: "worthy of respect, holy" },
+      { en: "revise", hy: "կրկնել, տեղափոխել", ex: "change, alter, bring up to date" },
+      { en: "pledge", hy: "խոստում", ex: "promise" },
+      { en: "casual", hy: "պատահական", ex: "happening by chance, not planned or expected" },
+      { en: "pursue", hy: "հետապնդել", ex: "follow, proceed doing" },
+      { en: "unanimous", hy: "միաձայն", ex: "in complete agreement" },
+      { en: "fortunate", hy: "հաջողակ", ex: "having good luck, lucky" },
+      { en: "pioneer", hy: "նախաձեռնող, առաջնորդ", ex: "one who goes first or prepares a way for others" },
+      { en: "innovative", hy: "նորարարական", ex: "fresh, clever, having new ideas" },
+      { en: "slender", hy: "բարեկազմ", ex: "long and thin, limited, slight" },
+      { en: "surpass", hy: "գերազանցել", ex: "do better than, be greater than, excel" },
+      { en: "vast", hy: "հսկա, ընդարձակ", ex: "very great, enormous" },
+      { en: "doubt", hy: "կասկած", ex: "not believe, not be sure of, feel uncertain about, lack of certainty" },
+      { en: "capacity", hy: "ծավալ, տարողություն", ex: "amount of room or space inside" },
+      { en: "penetrate", hy: "թափանցել, ներխուժել", ex: "get into or through" },
+      { en: "pierce", hy: "ծակել/թափանցել", ex: "go into, go through" },
+      { en: "accurate", hy: "ճշգրիտ", ex: "exactly right as the result of care or pains" },
+      { en: "microscope", hy: "մանրադիտակ", ex: "instrument with lens for making objects larger" },
+      { en: "grateful", hy: "շնորհակալ", ex: "feeling gratitude, thankful" },
+      { en: "cautious", hy: "ուշադիր", ex: "very careful, never taking chances" },
+      { en: "confident", hy: "վստահ", ex: "firmly believing, certain, sure" },
+      { en: "appeal", hy: "գրավիչ, բողոքել", ex: "attraction, interest, to urge" },
+      { en: "addict", hy: "կախվածություն", ex: "one who cannot break away from a habit" },
+      { en: "wary", hy: "զգույշ, ուշադիր", ex: "on one's guard against danger or trickery, cautious" },
+      { en: "aware", hy: "տեղյակ", ex: "knowing, realizing" },
+      { en: "misfortune", hy: "դժբախտություն", ex: "bad luck" },
+      { en: "avoid", hy: "խուսափել", ex: "keep away from, keep out of the way of" },
+      { en: "wretched", hy: "խղճուկ", ex: "very unsatisfactory, miserable" },
+      { en: "keg", hy: "տակառիկ", ex: "small barrel, usually holding less than 10 gallons" },
+      { en: "nourish", hy: "սնուցել", ex: "make or keep alive and well by feeding" },
+      { en: "harsh", hy: "կոպիտ", ex: "rough to the touch, taste eye, or ear, sharp" },
+      { en: "quantity", hy: "քանակ", ex: "amount" },
+      { en: "option", hy: "ընտրել", ex: "choose or favor, select" },
+      { en: "tragedy", hy: "ողբերգություն", ex: "a very sad or terrible happening, a sad play" },
+      { en: "pedestrian", hy: "հետիոտն", ex: "Person who goes on foot, walker" },
+      { en: "glance", hy: "հայացք", ex: "To look quickly, a quick look" },
+      { en: "budget", hy: "բյուջե", ex: "Estimate of the amount of money that can be spent for different purposes in a given time" },
+      { en: "nimble", hy: "արագաշարժ", ex: "Active and sure-footed" },
+      { en: "manipulate", hy: "կեղծել", ex: "Handle or treat skillfully" },
+      { en: "rekless", hy: "անբարեխիղճ", ex: "Careless, headless, wild" },
+      { en: "horrid", hy: "ահավոր", ex: "terrivle, frightful" },
+      { en: "rave", hy: "զառանցել", ex: "talk wildly" },
+      { en: "economical", hy: "տնտեսող", ex: "not wasting money or time" },
+      { en: "lubricate", hy: "յուղել, օծել", ex: "make smooth and easy to work by putting on oil etc." },
+      { en: "ingenious", hy: "սրամիտ, խելացի", ex: "Having great mental ability, clever" },
+      { en: "harvest", hy: "բերքահավաք", ex: "Gathering in of grain or other food crops " },
+      { en: "abundant", hy: "առատ", ex: "more than enough, very plentiful" },
+      { en: "uneasy", hy: "անհանգիստ", ex: "restless, disturbed, ansious" },
+      { en: "calculate", hy: "հաշվել", ex: "find out by adding, subtracting, multiplying or dividing" },
+      { en: "absorb", hy: "կլանել, քաշել", ex: "take in or suck up(liquids)" },
+      { en: "estimate", hy: "գնահատում", ex: "form a judgment or opinion about, guess" },
+      { en: "morsel", hy: "պատառ", ex: "a small bite, mouthful" },
+      { en: "quota", hy: "թույլատրելի չափ", ex: "share of a total due form or to particular state, person etc." },
+      { en: "threat", hy: "վտանգ, սպառնալիք", ex: "sign or cause of possible evil or harm" },
+      { en: "ban", hy: "արգելել", ex: "prohibit, forbid" },
+      { en: "panic", hy: "խուճապ", ex: "unreasoning fear, so they lose control of themselves" },
+      { en: "appropriate", hy: "հարմար", ex: "fit, set apart for some special use" },
+      { en: "emerge", hy: "առանձնանալ, հայտնվել", ex: "come out, come into view" },
+      { en: "jagged", hy: "ատամնավոր", ex: "with sharp points sticking out" },
+      { en: "linger", hy: "դանդաղել", ex: "stay on, go slowly" },
+      { en: "ambush", hy: "փոս, խրամատ", ex: "a trap in which soldiers or other enemies hide to make surprise attack" },
+      { en: "crafty", hy: "ճկուն, ճարպիկ", ex: "skillful in deceiving others" },
+      { en: "defiant", hy: "հանդուգն", ex: "openly resisting, challenging" },
+      { en: "vigor", hy: "եռանդ", ex: "active strenght or force" },
+      { en: "perish", hy: "վերանալ, մահանալ", ex: "be destroyed, die" },
+      { en: "fragile", hy: "փխրուն", ex: "easily broken, damaged or destroyed" },
+      { en: "captive", hy: "գերի, բանտարկյալ", ex: "prisoner" },
+      { en: "prosper", hy: "հաջողակ", ex: "be successful, have good fortune" },
+      { en: "devour", hy: "կուլ տալ", ex: "eat hungrily, absorb completely, take in greedily" },
+      { en: "plea", hy: "խնդրանք", ex: "request, appeal, that which is asked of another" },
+      { en: "weary", hy: "հոգնած", ex: "tired" },
+      { en: "collide", hy: "բախվել", ex: "come toghether with force" },
+      { en: "confirm", hy: "հաստատել", ex: "prove to be true or correct, make ceratin" },
+      { en: "verify", hy: "հաստատել", ex: "prove to be true, confirm" },
+      { en: "anticipate", hy: "ակնկալել", ex: "look forward to, expect" },
+      { en: "dilemma", hy: "երկընտրանք", ex: "situation requiring a cgoice between two ecils, a difficult choice" },
+      { en: "detour", hy: "շրջանցել", ex: "a roundabout way" },
+      { en: "merit", hy: "արժանիք", ex: "goodness, worth, value" },
+      { en: "transmit", hy: "փոխանցել", ex: "send over, pass on, pass along, let through" },
+      { en: "relieve", hy: "թեթևացնել", ex: "make less, make easier, reduce the pain of, replace, release, free" },
+      { en: "baffle", hy: "շփոթեցնել", ex: "be too hard to understand or solve" },
+      { en: "warden", hy: "պահակ", ex: "keeper, guard, person in charge of a prison" },
+      { en: "acknowledge", hy: "խոստովանել", ex: "admit to be true" },
+      { en: "delinquent", hy: "հանցագործ", ex: "an offender, criminal, behind time" },
+      { en: "reject", hy: "հրաժարվել", ex: "refuse to take, use, believe, consider, grant, etc." },
+      { en: "deprive", hy: "զրկել", ex: "take away from by force" },
+      { en: "spouse", hy: "ամուսին", ex: "husband or wife" },
+      { en: "vocation", hy: "զբաղմունք", ex: "occupation, buisness, profession, trade" },
+      { en: "unstable", hy: "անկայուն", ex: "not firmly fixed, easily moved or overthrown" },
+      { en: "homicide", hy: "սպանություն", ex: "a killing of one human being by another, murder" },
+      { en: "penalize", hy: "պատժել", ex: "declare punishable by law or rule, set a penalty for" },
+      { en: "beneficiary", hy: "շահառու", ex: "person who receives benefit" },
+      { en: "reptile", hy: "սողուն", ex: "a coll blooded animal that creeps or crawls, snakes, lizards, turtles, alligators, and crocodiles" },
+      { en: "rarely", hy: "հազվադեպ", ex: "seldom, not often" },
+      { en: "forbid", hy: "արգելել", ex: "order someone not to do something, make a rule against" },
+      { en: "logical", hy: "տրամաբանություն", ex: "reasonable, reasonably expected" },
+      { en: "exhibit", hy: "ցուցադրել", ex: "display, show" },
+      { en: "proceed", hy: "շարունակել", ex: "go on after having stopped, move forward" },
+      { en: "precaution", hy: "նախազգուշացում", ex: "measures taken beforehand, foresight" },
+      { en: "extract", hy: "դուրս հանել, քաշել", ex: "pull out or draw out, usually with some effort" },
+      { en: "prior", hy: "առաջ", ex: "coming before, earlier" },
+      { en: "embrace", hy: "գրկել", ex: "hug one another, a hug" },
+      { en: "valiant", hy: "քաջարի", ex: "brave, courageous" },
+      { en: "partial", hy: "մասնակի", ex: "not complete, not total" },
+      { en: "fierce", hy: "վայրի", ex: "savage, wild" },
+      { en: "detest", hy: "ատել", ex: "dislike very much, hate" },
+      { en: "sneer", hy: "ծաղրել, արհամարել", ex: "show scorn or contempt by looks or words; a scornful look or remark" },
+      { en: "scowl", hy: "մռայլվել", ex: "look angry by lowering the eyebrows, frown" },
+      { en: "encourage", hy: "քաջալերել", ex: "give courage to, increase the confidence of" },
+      { en: "consider", hy: "մտածել", ex: "think about in order to decide" },
+      { en: "vermin", hy: "մակաբույծներ", ex: "small animals that are troublesome or destructive, fleas, bedbugs, lice , rats and mice are vermin" },
+      { en: "wail", hy: "լաց ու կոց", ex: "cry loud and long because of grief or pain" },
+      { en: "symbol", hy: "սիմվոլ", ex: "something that stands for or represents something else" },
+      { en: "authority", hy: "իշխանություն", ex: "the right to command or enforce obedience; power delegated to another; an author or volume that may be appealed to in support of an action or belief" },
+      { en: "neutral", hy: "չեզոք", ex: "on neither side of a quarrel or war" },
+      { en: "trifle", hy: "մանրուք", ex: "a small amount, little bit something of little value" },
+      { en: "architect", hy: "ճարտարապետ", ex: "a person who makes plans for buildings and other structures, a maker, a creator" },
+      { en: "matrimony", hy: "ամուսնություն", ex: "married life, ceremon of marriage" },
+      { en: "baggage", hy: "ուղեբեռ", ex: "the trunks and suitcases a person takes ehrn he or she travels, an army's equipment" },
+      { en: "squander", hy: "վատնել", ex: "spend foolishly, waste" },
+      { en: "abroad", hy: "արտասահման", ex: "outside one's country, going around, far and wide" },
+      { en: "fugitive", hy: "փախչող", ex: "a runaway" },
+      { en: "calamity", hy: "աղետ", ex: "a great misfortune, serious trouble" },
+      { en: "pauper", hy: "աղքատ", ex: "a very poor person" },
+      { en: "envy", hy: "նախանձ", ex: "jealousy, the object of jealousy, to feel jealous" },
+      { en: "collapse", hy: "փլուզում, անկում", ex: "a breakdown, to fall in, break down, fail suddenly, fold together" },
+      { en: "prosecute", hy: "քրեական կարգով հետապնդել", ex: "bring before a court, follow up, carry on" },
+      { en: "bigamy", hy: "երկամուսնություն", ex: "having two wives or two husbands at the same time " },
+      { en: "possible", hy: "հնարավոր է", ex: "able to be, be don e, or happen, able to be true, able be done or chosen properly" },
+      { en: "compel", hy: "ստիպել", ex: "force, get by force" },
+      { en: "awkward", hy: "անշնորհք, անհարմար", ex: "clumsy, not well-suited to use, not easily managed, embarrassing" },
+      { en: "venture", hy: "ռիսկ", ex: "a daring undertaking, an attempt to make money by taking business risks, to dare, to expose, to risk" },
+      { en: "awesome", hy: "հիանալի", ex: "causing or showing great fear, wonder, or respect" },
+      { en: "guide", hy: "գիդ", ex: "a person who shows the way, to direct, to manage" },
+      { en: "quench", hy: "հանգցնել", ex: "put an end to, drown or put out" },
+      { en: "betray", hy: "դավաճանել", ex: "give away to the enemy, be unfaithful, mislead, show" },
+      { en: "utter", hy: "արտասանել", ex: "speak, make knoen, express" },
+      { en: "pacify", hy: "հանգստացնել", ex: "make calm, quiet down, bring peace to" },
+      { en: "respond", hy: "պատասխանել", ex: "answer, react" },
+      { en: "beckon", hy: "նշան անել", ex: "signal by a motion of the hand or head, attract" },
+      { en: "despite", hy: "չնայած", ex: "in spite of" },
+      { en: "disrupt", hy: "խանգարել", ex: "upset; cause to break down" },
+      { en: "rash", hy: "ցան", ex: "a breaking out with many small red spots" },
+      { en: "rapid", hy: "կատաղած", ex: "very quick, swift" },
+      { en: "exhaust", hy: "գերհոգնած", ex: "empty completely, use up, tire out" },
+      { en: "severity", hy: "խստություն", ex: "strictness, harshness, plaiess, violence" },
+      { en: "feeble", hy: "թույլ", ex: "weak" },
+      { en: "unite", hy: "միավորել", ex: "join together, become one" },
+      { en: "cease", hy: "դադարեցնել", ex: "stop" },
+      { en: "thrifty", hy: "խնայող", ex: "saving; careful in spending, thriving" },
+      { en: "miserly", hy: "խղճուկ, ժլատ", ex: "stingy; like a miser" },
+      { en: "monarch", hy: "միապետ", ex: "king of queen, ruler" },
+      { en: "outlaw", hy: "իրավազուրկ, հանցագործ", ex: "an exile, an outcast, a criminal, to declare unlawful" },
+      { en: "promote", hy: "աստիճանի բարձրացում", ex: "raise in rank or importance, help to grow and develop, help to organize" },
+      { en: "undernourished", hy: "թերսնված", ex: "not sufficiently fed" },
+      { en: "illustrate", hy: "պարաբանել", ex: "make clear or explain by stories, examples, comparisons, or other means, serve as an example" },
+      { en: "disclose", hy: "բացահայտել", ex: "uncover, make known" },
+      { en: "excessive", hy: "գերազանց", ex: "too much, too great, extreme" },
+      { en: "disaster", hy: "աղետ", ex: "an event that causes much suffering or less, a great misfortune" },
+      { en: "censor", hy: "գրաքննիչ, դատավոր", ex: "person who tells others how they ought to behave, one who changes books, plays and other works so as to make them acceptable to the government; to make changes in" },
+      { en: "culprit", hy: "մեղավոր", ex: "offered, person guilty of a fault or crime" },
+      { en: "juvenile", hy: "երիտասարդ", ex: "young; youthful; of or for boys and girls; a young person" },
+      { en: "bait", hy: "խայծ, գայթակղություն", ex: "anything, especially food, used to attract fish or other animals so that they may be caught; anything used to tempt or attract a person to begin something he or she does not wish to do; to put bait on (a hook) or in (trap); torment by unkind or annoying remarks" },
+      { en: "insist", hy: "պնդել", ex: "keep firmly to some demand, statement, or position" },
+      { en: "toil", hy: "աշխատել", ex: "hard work; to work hard; move with difficulty" },
+      { en: "blunder", hy: "սխալ", ex: "stupid mistake; to make a stupid mistake; stumble; say clumsily" },
+      { en: "daze", hy: "շփոթել", ex: "confuse" },
+      { en: "mourn", hy: "սգալ", ex: "grieve; feel or show sorrow for" },
+      { en: "subside", hy: "թուլանալ", ex: "sink to a lower level; grow less" },
+      { en: "maim", hy: "հաշմանդամ", ex: "cripple; diable; cause to lose an arm, leg, or other part of the body" },
+      { en: "comprehend", hy: "հասկանալ", ex: "understand" },
+      { en: "commend", hy: "գովել", ex: "praise; hand over for safekeeping" },
+      { en: "final", hy: "վերջին", ex: "coming last; deciding" },
+      { en: "exempt", hy: "ազատել", ex: "make free from; feed from" },
+      { en: "vain", hy: "ապարդյուն", ex: "having too much pride in one's ability, looks, a" },
+      { en: "repetition", hy: "կրկնություն", ex: "act of doing or saying again" },
+      { en: "depict", hy: "պատկերել", ex: "represent by drawing or painting; describe" },
+      { en: "mortal", hy: "մահկանացու", ex: "sure to die sometime; pertaining to man; deadly, pertaining to or causing death" },
+      { en: "novel", hy: "վեպ", ex: "new, strange, a long story with characters and plot" },
+      { en: "occupant", hy: "բնակիչ", ex: "person in possession if a house, office, or position" },
+      { en: "appoint", hy: "նշանակել", ex: "decide on; set a time or place; choose for a position; equip or furnish" },
+      { en: "quarter", hy: "թաղ", ex: "region; section; (quarters) a place to live; to provide a place to live" },
+      { en: "site", hy: "կայք", ex: "position or place(of anything)" },
+      { en: "quote", hy: "մեջբերում", ex: "repeat exactly the words of another or a passage from a book; that is, something that is repeated exactly, give the price of, a quotation" },
+      { en: "verse", hy: "չափածո", ex: "a short division of a chapterin the bible; a single line or a group of lines of poetry" },
+      { en: "morality", hy: "բարոյականություն", ex: "the right or wrong of an action; virtue; a set of rules or principles of conduct" },
+      { en: "roam", hy: "թափառել", ex: "wander, go about with no special plan or aim" },
+      { en: "attract", hy: "գրավել", ex: "draw to oneself, win the attention and liking of" },
+      { en: "commuter", hy: "ճանապարհորդ", ex: "one who travels regulary, especially over a considerable distance, betweenhome and work" },
+      { en: "confine", hy: "սահման, եզր, ծայր, փակել", ex: "keep in; hold in" },
+      { en: "idle", hy: "պարապ, անգործ, ծույլ", ex: "not doing anything; no busy; lazy; without any good reason or cause; to waist (time)" },
+      { en: "idol", hy: "կուռք", ex: "a thing; usually an image, that is worshiped; a person or thing that is loved very much" },
+      { en: "jest", hy: "կատակ, կատակել", ex: "joke; fun; mockery; thing to be laughed at; to joke; poke fun" },
+      { en: "patriotic", hy: "հայրենասիրական", ex: "loving one's country showing love and loyal support for one's country" },
+      { en: "dispute", hy: "չնայած", ex: "disagree; oppose; try to win; a debate or disagreement" },
+      { en: "valor", hy: "քաջություն", ex: "bravery; courage" },
+      { en: "lunatic", hy: "հոգեկան հիվանդ", ex: "crazy person; insane; extremely" },
+      { en: "vein", hy: "երակ", ex: "mood; a blood vessel that carries blood to the heart; a crack or seam in a rock filled with a different mineral" },
+      { en: "uneventful", hy: "խաղաղ, հանգիստ", ex: "without importance or striking happenings" },
+      { en: "fertile", hy: "բերրի, պտղաբեր", ex: "bearing seeds or fruit; producing much of anything" },
+      { en: "refer", hy: "դիմել, հղել", ex: "hand over; send, or turn for information, help, or action; direct attention to or speak about; assign to or think of a caused by" },
+      { en: "distress", hy: "վիծտ, մտահոգություն", ex: "great pain or sorrow; misfortune; dangerous or difficult situation; to cause pain or make unhappy" },
+      { en: "diminish", hy: "նվազել, պակասել", ex: "make or become smaller in size, amount or importance" },
+      { en: "maximum", hy: "առավելագույնը", ex: "greatest amount; greatest possible" },
+      { en: "flee", hy: "փախչել, խուսափել", ex: "run awat; go quickly" },
+      { en: "vulnerable", hy: "խոցելի", ex: "capable of being injured; open to attack; sensitive to criticism, influences, etc." },
+      { en: "signify", hy: "նշանակել, արտահայտել", ex: "mean; be a sign of; make known by signs, words, or actions; have importance" },
+      { en: "mythology", hy: "դիցաբանություն", ex: "legends or stories that usually attempt to explain something in nature" },
+      { en: "colleague", hy: "կոլեգա", ex: "associate; fellow worker" },
+      { en: "torment", hy: "տանջանք, չարչարանք", ex: "cause very great pain to; worry or annoy very much; cause of very great pain; very great pain"},
+      { en: "provide", hy: "ապահովել", ex: "to supply; to state as a condition; to prepare for a against some situation" },
+      { en: "loyalty", hy: "հավատարմություն", ex: "faithfulness to a person, government, idea, custom, or the like" },
+      { en: "volunteer", hy: "կամավոր", ex: "person who enters any service of his or herown free will; to offer one’s services " },
+      { en: "prejudice", hy: "նախապաշարմունք", ex: "an opinion formed without taking time and care to judge fairly; to harm or injure" },
+      { en: "shrill", hy: "ցնցում, ճչալ", ex: "having a high pitch; high and sharp in sound; piercing" },
+      { en: "jolly", hy: "ուրախ, զվարթ", ex: "merry; full of fun" },
+      { en: "witty", hy: "սրամիտ", ex: "cleverly amusing" },
+      { en: "hinder", hy: "խանգարել, հետ պահել", ex: "gold back; make hard to do" },
+      { en: "lecture", hy: "դասախոսություն", ex: "speech or planned talk; a scolding; to scold" },
+      { en: "abuse", hy: "քննադատել", ex: "make bad use of; use wrongly; treat badly; scold very severely; bad or wrong use; bad treatment" },
+      { en: "mumble", hy: "փնթփնթալ, քթի տկ խոսալ", ex: "speak indistincty" },
+      { en: "mute", hy: "համր", ex: "silent; unable to speak" },
+      { en: "wad", hy: "փափուկ փոքր բան", ex: "small; soft mass; to roll or crush into small mass" },
+      { en: "retain", hy: "պահել", ex: "keep; remember; employ by of a fee" },
+      { en: "candidate", hy: "թեկնածու", ex: "person who is proposed for some office or honor" },
+      { en: "precede", hy: "նախորդել", ex: "go before; come before; be higher in rank or importance" },
+      { en: "adolescent", hy: "դեռահաս", ex: "growing up to manhood or womanhood; youthful; a person from about 13 to 22 years of age" },
+      { en: "coeducaational", hy: "ընդհանուր ուսուցում", ex: "having to do with educating both sexes in the same school" },
+      { en: "radical", hy: "արմատ", ex: "going to the root; fundamental; extreme; person with extreme opinions" },
+      { en: "spontaneous", hy: "ինքնակամ, ոչ տրամադրված", ex: "of one’s own freewll; natural; on the spur of the moment ; without rehearsal" },
+      { en: "skim", hy: "սահել", ex: "remove from the top; move lightly (over); glide along; read hastily or carelessly" },
+      { en: "vaccinate", hy: "պատվաստել", ex: "inoculate with vaccine as a protection against  smallpox and other diseases" },
+      { en: "untidy", hy: "թափթփված", ex: "not neat; not in order" },
+      { en: "utensil", hy: "սպասք, պարագա", ex: "container or tool use for practical purposes" },
+      { en: "sensitive", hy: "զգայուն", ex: "receiving impressions readily; easily affected or influenced; easily hurst or offended" },
+      { en: "temperate", hy: "չափավոր", ex: "not very hot and not very cold" },
+      { en: "vague", hy: "անորոշ, անհստակ", ex: "not definite; not clear; not distinct" },
+      { en: "elevate", hy: "բարձրացնել", ex: "raise; lift up" },
+      { en: "lottery", hy: "վիճակախաղ", ex: "a scheme for disturbing prizes by lot or chance" },
+      { en: "finance", hy: "ֆինանս", ex: "money matters; to provide money for" },
+      { en: "obtain", hy: "ձեռք բերել", ex: "get; be in use" },
+      { en: "cinema", hy: "կինոթատրոն", ex: "moving picture" },
+      { en: "event", hy: "իրադարձություն", ex: "happening; important happening; result or outcome; one item in a program or sports" },
+      { en: "discard", hy: "հրաժարվել, դուրս նետել", ex: "thrrow aside" },
+      { en: "soar", hy: "աճել", ex: "fly upward or at a great height; aspire" },
+      { en: "subsequent", hy: "հետագա, հաջորդ", ex: "later; following; coming after" },
+      { en: "relate", hy: "պատմել, կապել", ex: "tell; give an account of; connect in thought or meaning" },
+      { en: "stationary", hy: "կայուն, անշարժ", ex: "having a fixed station or place; standing still; not moving; not changing in size, number or activity" },
+      { en: "prompt", hy: "արագ, շտապ, հուշում", ex: "quick; on time; done at once; to cause to do something; remind (someone) of the words or actions needed" },
+      { en: "hasty", hy: "արագ, չմտածված", ex: "wuick; hurried; not well thought out" },
+      { en: "scorch", hy: "խանձվել, վառել", ex: "burn slightly; dry up; criticize sharply" },
+      { en: "tempest", hy: "փոթորի, կատաղել", ex: "violent storm with much wind; a violent disturbance" },
+      { en: "soothe", hy: "հանգստացնել, շոյել", ex: "quiet; calm; comfort" },
+      { en: "sympathetic", hy: "կարեկցող", ex: "having or showing kind feelings toward others; approving; enjoying the same things and getting along well together" },
+      { en: "redeem", hy: "հատուցել, փրկել", ex: "buy back; pay off; carry out; sset free; make up for" },
+      { en: "resume", hy: "վերսկսել", ex: "being again; go on; take again" },
+      { en: "harmony", hy: "ներդաշնակություն", ex: "situation of getting on well together or going well together; sweet or musical sound" },
+      { en: "refrain", hy: "ետ պահել", ex: "hold back" },
+      { en: "illegal", hy: "անօրինական", ex: "not lawful; against the law" },
+      { en: "narcotic", hy: "թմրանյութ", ex: "drug that produces drowsiness, sleep, dullness, or an insensible condition, and lessens pain by dulling the nerves" },
+      { en: "heir", hy: "ժառանգ", ex: "person who has a rigt to to someone’s property after that one dies; person who inherits anything" },
+      { en: "majestic", hy: "հոյակապ, փառահեղ", ex: "grand, noble; dignified; kingly" },
+      { en: "dwindly", hy: "փոքրանալ, նվազել", ex: "becoome smaller and smaller; shrink" },
+      { en: "surplus", hy: "ավելցուկ", ex: "amount over and above what is needed; excess, extra" },
+      { en: "traitor", hy: "դավաճան", ex: "person who betrays his or her country, a friend, duty" },
+      { en: "deliberate", hy: "դիտավորալ, քննարկել", ex: "to consider carefully; intended; done on purpose; slow and careful, as though allowing time to decide what to do" },
+      { en: "vandal", hy: "բարբարոս", ex: "person who willfully or ignorantly destroys or damages beautiful things" },
+      { en: "drought", hy: "երաշտ", ex: "long period of dry weather; lack of rain; lack of water; dryness" },
+      { en: "abide", hy: "տանել, չկարողանալ", ex: "accept and follow out; remain faithful to; dwell; endure" },
+      { en: "unify", hy: "միավորել", ex: "unite; make or form into one" },
+      { en: "summit", hy: "գագաթ", ex: "highest point; top" },
+      { en: "heed", hy: "ուշադրություն դարձնել", ex: "give careful attention to; take notice of; careful attention" },
+      { en: "biography", hy: "կենսագրություն", ex: "the written story of a person's life; the part of literature that consists of biographies" },
+      { en: "drench", hy: "թրջվել, թացություն", ex: "wet thoroughly, soak" },
+      { en: "swarm", hy: "ամբոխ, երամ", ex: "group of insects flying or moving about together, crowd or great number; to fly or move about in great numbers" },
+      { en: "wobble", hy: "դողալ, տատանվել", ex: "move unsteadily from side to side" },
+      { en: "tumult", hy: "ցնցում, աղմուկ, իրարանցում", ex: "noise; uproar; violent disturbance or disorder" },
+      { en: "kneel", hy: "ծնկի գալ", ex: "go down on one's knees; remain on the knees" },
+      { en: "dejected", hy: "ընկճված, ճնշված", ex: "in low spirits; sad" },
+      { en: "obedient", hy: "հնազանդ, ենթարկվող", ex: "doing what one is told; willing to obey" },
+      { en: "recede", hy: "նահանջել, հեռանալ", ex: "go back; move back; slope backward; withdraw" },
+      { en: "tyrant", hy: "բռնակալ", ex: "cruel or injust ruler; cruel master; absolute ruler" },
+      { en: "charity", hy: "բարեգործություն", ex: "generous giving to the poor, institutions for helping  the sick,the poor. Or the helpless; kindness in judging people’s faults" },
+      { en: "verdict", hy: "դատավճիռ", ex: "decision of a jury; judgment" },
+      { en: "unearth", hy: "հայտնաբերել, բացահայտել, գտնել", ex: "dig up; discover; find out" },
+      { en: "depart", hy: "հեռանալ, մեկնել", ex: "go away; leave; turn away (from); die; change" },
+      { en: "coincide", hy: "համընկնել", ex: "occupy the same place in space; occupy the same time; correspond exactly; agree" },
+      { en: "cancel", hy: "չեղարկել", ex: "cross out; mark so that is cannot be used; wipe out; call of" },
+      { en: "debtor", hy: "պարտապան", ex: "person who ows something to another" },
+      { en: "legible", hy: "ընթեռնելի", ex: "able to be read; easy to read; plain and clean" },
+      { en: "placard", hy: "պլակատ", ex: "a notice to be posted in a public place; poster" },
+      { en: "contagious", hy: "վարակիչ", ex: "spreading by contact, easily spreading from one to another" },
+      { en: "clergy", hy: "հոգհևորական, հոգևոր", ex: "persons prepared for religious work; clergymen as a group" },
+      { en: "customary", hy: "սովորական", ex: "usual" },
+      { en: "transparent", hy: "թափանցիկ, պարզ", ex: "easily seen through, clear" },
+      { en: "scald", hy: "այրվածք, այրել հեղուկի միջոցով", ex: "poor boiling liquid over; burn with hot liquid or steam; heat almost to the boiling point" },
+      { en: "epidemic", hy: "համաճարակ", ex: "an outbreak of a disease that spreads rapidly so that many people have it at the same time; widespread" },
+      { en: "obesity", hy: "ճարպակալում, գիրություն", ex: "extreme fatness" },
+      { en: "magnify", hy: "խոշորացնել, մեխծացնել", ex: "cause to look larger than it really is; make too much of; go beyond the truth in telling" },
+      { en: "chiropractor", hy: "ողնաշարի թերապևտ", ex: "a person who treats ailments by massage and manipulation of the vertebrae and other forms of therapy on the theory that disease results from interference with the normal functioning of the nervous system" },
+      { en: "obstacle", hy: "խոչընդոտ", ex: "anything that gets in the way of hinders; impediment; obstruction" },
+      { en: "ventilate", hy: "օդափոխել, պարզաբանել", ex: "change the air in; purify by fresh air; discuss openly" },
+      { en: "jeopardize", hy: "վտանգել", ex: "risk; endanger" },
+      { en: "negative", hy: "բացասական", ex: "saying no; minus; showing the lights and shadows reversed" },
+      { en: "pension", hy: "կենսաթոշակ, նպաստ", ex: "regular payment that is not wages; to make such a payment" },
+      { en: "vital", hy: "կենսական", ex: "having to do with life; necessary to life; causing death; failure or ruin; lively" },
+      { en: "municipal", hy: "քաղաքային", ex: "of a city or state; having something to do in the affairs of a city or town" },
+      { en: "oral", hy: "բանավոր", ex: "spoken; using speech; of the mouth" },
+      { en: "comolancent", hy: "ինքնագոհ", ex: "pleased with oneself; self-satisfied" },
+      { en: "wasp", hy: "իշամեղու", ex: "an insect with a slender body with a powerful sting" },
+      { en: "rehabilitate", hy: "վերականգնել", ex: "restore to good condition; make over in a new form; restore to former standing, rank, reputation" },
+      { en: "parole", hy: "պայմանական վաղաժամկետ ազատում, գաղտնաբառ", ex: "word of honor; conditional freedom; to free (a prisoner) under certain conditions" },
+      { en: "vertical", hy: "ուղղահայաց", ex: "straight up and down with reference to the horizon, for example, a vertical line" },
+      { en: "multitude", hy: "բազմություն, ամբոխ, մեծամասնություն", ex: "a great number; a crowd" },
+      { en: "nominate", hy: "նշանակել պաշտոնի", ex: "name as a candidate for office; appoint to an office" },
+      { en: "potential", hy: "պոտենցիալ", ex: "possibility as opposed actuality; capability of coming into being or action" },
+      { en: "morgue", hy: "դիահերձարան", ex: "place where bodies of unknown persons found dead are kept; the reference library of a newspaper office" },
+      { en: "preaccupied", hy: "մտահոգված", ex: "took up all the attention" },
+      { en: "upholstery", hy: "փափուկած", ex: "coverings and cushions for furniture" },
+      { en: "indifference", hy: "անտարբերություն", ex: "lack of interest, care or attention" },
+      { en: "maintain", hy: "պահպանել", ex: "keep; keep up; carry on; uphold; support declare to be true" },
+      { en: "snub", hy: "վիրավորանք", ex: "treat coldly, scornfully, or with contempt, cold treatment" },
+      { en: "endure", hy: "հանդուրժել", ex: "last; keep on; undergo; bear; stand" },
+      { en: "wrath", hy: "սաստիկ զայրույթ", ex: "very great anger; rag" },
+      { en: "expose", hy: "բացահայտում, ցուցադրել", ex: "lay open; uncover; leave unprotected; show openly" },
+      { en: "legend", hy: "լեգենդ", ex: "story coming from the past, which many people have believed; what is writteb" },
+      { en: "ponder", hy: "խորհել, մտածել, վերամտածել", ex: "consider carefully" },
+      { en: "resign", hy: "հրաժարվել, թողնել", ex: "give up; yield; submit" },
+      { en: "drastic", hy: "կտրուկ", ex: "acting with force violence" },
+      { en: "wharf", hy: "նավակայան", ex: "platform built on the shore or out from the shore beside which ships can load or unload" },
+      { en: "amend", hy: "փոփոխություն դեպի լավը, ուղղել, փոխել", ex: "change for the better; correct; change" },
+      { en: "ballot", hy: "քվեաթերթիկ, քվեարկում", ex: "piece of paper used in voting; the whole number of votes cast; the method of secret voting; to vote or decide by using ballots" }
+
+    ];
+
+    let currentWord = null;
+let wordHistory = [];
+let correctWords = [];
+let wrongWords = [];
+let revising = false;
+let reviseWords = [];
+    let remainingWords = [...words];
+
+    // Active lessons filter: array of lesson numbers (1-42). Null/empty => all
+    let activeLessons = null; // means all
+
+    // Score starts at 504 remaining words; Total stays 0 per requirement
+    let score = 0;
+    let total = 504;
+    let streak = 0;
+
+    // Helpers for lessons
+    function lessonOfIndex(index) {
+      // 12 words per lesson, lessons 1..42
+      return Math.floor(index / 12) + 1;
+    }
+    function indicesForLesson(lessonNumber) {
+      const start = (lessonNumber - 1) * 12;
+      return Array.from({ length: 12 }, (_, i) => start + i).filter(i => i >= 0 && i < words.length);
+    }
+    function wordsForLessons(lessonsArr) {
+      if (!lessonsArr || lessonsArr.length === 0) return [...words];
+      const picked = new Set();
+      for (const ln of lessonsArr) {
+        for (const i of indicesForLesson(ln)) picked.add(i);
+      }
+      return Array.from(picked).sort((a,b)=>a-b).map(i => words[i]);
+    }
+    function parseLessonsInput(text) {
+      // Accept: "7", "3-20", "1,4,10-12"
+      if (!text) return [];
+      const parts = text.split(',').map(s => s.trim()).filter(Boolean);
+      const out = new Set();
+      for (const p of parts) {
+        if (/^\d+$/.test(p)) {
+          const n = parseInt(p, 10);
+          if (n >= 1 && n <= 42) out.add(n);
+        } else if (/^(\d+)-(\d+)$/.test(p)) {
+          const [, aStr, bStr] = p.match(/(\d+)-(\d+)/) || [];
+          const a = parseInt(aStr, 10); const b = parseInt(bStr, 10);
+          if (a >= 1 && b >= 1 && a <= 42 && b <= 42 && a <= b) {
+            for (let n = a; n <= b; n++) out.add(n);
+          }
+        } else {
+          // ignore invalid chunks
+        }
+      }
+      return Array.from(out).sort((a,b)=>a-b);
+    }
+    function applyLessonsFilter(newLessons) {
+      activeLessons = (newLessons && newLessons.length) ? newLessons : null;
+      // Recompute remainingWords from the allowed set, excluding already answered words to avoid repeats in current session
+      const basePool = wordsForLessons(activeLessons);
+      remainingWords = basePool.filter(w => !correctWords.includes(w) && !wrongWords.includes(w));
+      // Update Total based on active lessons (12 words per lesson)
+      total = (activeLessons && activeLessons.length) ? activeLessons.length * 12 : 504;
+      updateScoreStreak();
+      // UI note
+      const el = document.getElementById('active-lessons');
+      const backBtn = document.getElementById('go-back-btn');
+      if (!activeLessons) {
+        el.textContent = "All lessons (1-42)";
+        if (backBtn) backBtn.style.display = 'none';
+      } else {
+        el.textContent = `Active lessons: ${activeLessons.join(', ')}`;
+        if (backBtn) backBtn.style.display = 'inline-block';
+      }
+      // Reset current prompt display prompt to press Next
+      const nextBtn = document.querySelector('button[onclick="nextWord()"]');
+      const checkBtn = document.querySelector('button[onclick="checkAnswer()"]');
+      document.getElementById("armenian").innerText = "Press 'Next Word' to start";
+      document.getElementById("answer").value = "";
+      document.getElementById("result").innerText = "";
+      document.getElementById("answer").disabled = true;
+      if (nextBtn) nextBtn.disabled = false;
+      if (checkBtn) checkBtn.disabled = true;
+    }
+
+    function updateScoreStreak() {
+      const el = document.getElementById('score-streak');
+      el.innerHTML = `Score: ${score} &nbsp; Total: ${total} &nbsp; Streak: ${streak} <span style=\"color:#ff9800;\">${streak > 2 ? '🔥' : ''}</span>`;
+    }
+
+    function nextWord() {
+  playClick();
+  const nextBtn = document.querySelector('button[onclick="nextWord()"]');
+  const checkBtn = document.querySelector('button[onclick="checkAnswer()"]');
+  if (revising) {
+    // If no more words to revise, exit revise mode and continue normal flow
+    if (reviseWords.length === 0) {
+      revising = false;
+      // Rebuild wrong-words UI (it may already be empty if all fixed)
+      document.getElementById('correct-words').innerHTML = correctWords.map(w => `<li>${w.hy} (${w.en})</li>`).join('');
+      document.getElementById('wrong-words').innerHTML = wrongWords.map(w => `<li>${w.hy} (${w.en})</li>`).join('');
+      document.getElementById('revise-btn').style.display = wrongWords.length > 0 ? 'inline-block' : 'none';
+      // Immediately fall through to pick next normal word
+    } else {
+      currentWord = reviseWords[0];
+      typeWriter(currentWord.hy);
+      document.getElementById("answer").value = "";
+      document.getElementById("result").innerText = "";
+      nextBtn.disabled = true;
+      checkBtn.disabled = false;
+      document.getElementById("answer").disabled = false;
+      updateScoreStreak();
+      return;
+    }
+  }
+  // Filter base pool by active lessons, then filter out words already answered
+  const basePool = wordsForLessons(activeLessons);
+  remainingWords = basePool.filter(w => !correctWords.includes(w) && !wrongWords.includes(w));
+  if (remainingWords.length === 0) {
+    document.getElementById("armenian").innerText = "All words completed!";
+    document.getElementById("answer").disabled = true;
+    nextBtn.disabled = true;
+    checkBtn.disabled = true;
+    let rank = "";
+    if (score > 0) {
+      rank = `Remaining: ${score}`;
+    } else {
+      rank = "All mastered!";
+    }
+    let historyHtml = `<div style='margin-top:24px;text-align:left;'><b>Word History</b><ul style='padding-left:18px;'>`;
+    for (const h of wordHistory) {
+      let icon = h.status === 'correct' ? '✔️' : (h.status === 'info' ? 'ℹ️' : '❌');
+      historyHtml += `<li>${icon} <b>${h.word.hy}</b> (${h.word.en})</li>`;
+    }
+    historyHtml += '</ul></div>';
+    document.getElementById("result").innerHTML = `<span style='font-size:1.3em;'>Your rank: <b>${rank}</b></span><br><button id='restart-btn' style='margin-top:16px;padding:10px 24px;font-size:18px;border-radius:8px;background:#ffd700;color:#222;border:none;cursor:pointer;'>Restart</button>${historyHtml}`;
+    document.getElementById("restart-btn").onclick = function() {
+      // Reset game state
+      remainingWords = [...words];
+      score = 0;
+      total = 504;
+      streak = 0;
+      wordHistory = [];
+      document.getElementById("answer").disabled = false;
+      nextBtn.disabled = false;
+      checkBtn.disabled = true;
+      document.getElementById("result").innerText = "";
+      updateScoreStreak();
+      document.getElementById("armenian").innerText = "Press 'Next Word' to start";
+      document.getElementById("answer").value = "";
+    };
+    return;
+  }
+  const randomIndex = Math.floor(Math.random() * remainingWords.length);
+  currentWord = remainingWords[randomIndex];
+  typeWriter(currentWord.hy);
+  document.getElementById("answer").value = "";
+  const resultEl = document.getElementById("result");
+  resultEl.innerText = "";
+  resultEl.className = "";
+  nextBtn.disabled = true;
+  checkBtn.disabled = false;
+  document.getElementById("answer").disabled = false;
+  updateScoreStreak();
+    }
+    
+    function checkAnswer() {
+  const nextBtn = document.querySelector('button[onclick="nextWord()"]');
+  const checkBtn = document.querySelector('button[onclick="checkAnswer()"]');
+      const userAnswer = document.getElementById("answer").value.trim().toLowerCase();
+      const resultEl = document.getElementById("result");
+      resultEl.className = "";
+      
+      if (revising) {
+        // We will update reviseWords after marking answer
+      }
+      let outcome = null; // 'correct' | 'wrong' | 'info'
+      if (userAnswer === currentWord.en.toLowerCase()) {
+        resultEl.innerText = "✅ Correct!";
+        resultEl.classList.add("result-correct");
+        outcome = 'correct';
+        streak++;
+        // (score will be incremented once per submission below)
+        playCorrect();
+        // Remove from remaining pool in normal mode
+        if (!revising) {
+          remainingWords = remainingWords.filter(w => w !== currentWord);
+        }
+        wordHistory.push({word: currentWord, status: 'correct'});
+        // Move between lists appropriately
+        if (revising) {
+          // remove from reviseWords and wrongWords, add to correctWords
+          reviseWords = reviseWords.filter(w => w !== currentWord);
+          // Removed leftover score adjustments here; scoring is handled once per submission.
+          wrongWords = wrongWords.filter(w => w !== currentWord);
+          if (!correctWords.includes(currentWord)) correctWords.push(currentWord);
+        } else {
+          if (!correctWords.includes(currentWord)) correctWords.push(currentWord);
+        }
+      } else if (userAnswer === "i don't know") {
+        resultEl.innerText = "ℹ️ " + currentWord.en + " = " + currentWord.ex;
+        resultEl.classList.add("result-info");
+        outcome = 'info';
+        streak = 0;
+        // In revise mode, keep it in reviseWords; in normal mode, move to wrong
+        if (!revising) {
+          remainingWords = remainingWords.filter(w => w !== currentWord);
+          if (!wrongWords.includes(currentWord)) wrongWords.push(currentWord);
+        }
+        wordHistory.push({word: currentWord, status: 'info'});
+      } else {
+        resultEl.innerText = "❌ Wrong! Correct: " + currentWord.en;
+        resultEl.classList.add("result-wrong");
+        outcome = 'wrong';
+        // Do not change score for a wrong answer
+        streak = 0; // total remains 0
+        playWrong();
+        wordHistory.push({word: currentWord, status: 'wrong'});
+        // In revise mode, keep it in reviseWords; in normal mode, add to wrongWords
+        if (!revising) {
+          if (!wrongWords.includes(currentWord)) wrongWords.push(currentWord);
+          remainingWords = remainingWords.filter(w => w !== currentWord);
+        }
+      }
+      // Update correct/wrong lists
+      document.getElementById('correct-words').innerHTML = correctWords.map(w => `<li>${w.hy} (${w.en})</li>`).join('');
+      document.getElementById('wrong-words').innerHTML = wrongWords.map(w => `<li>${w.hy} (${w.en})</li>`).join('');
+
+      // Smooth scroll to the relevant section so the user sees the update
+      try {
+        if (outcome === 'correct') {
+          document.getElementById('correct-list').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else if (outcome === 'wrong' || outcome === 'info') {
+          document.getElementById('wrong-list').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      } catch (e) {
+        // Fallback using window.scrollBy if scrollIntoView fails
+        window.scrollBy({ top: 2, left: 0, behavior: 'smooth' });
+      }
+
+  // Increase score by 1 for every check submission (correct, wrong, or "I don't know")
+  // but do NOT increase score when user is in revise mode
+  if (!revising) {
+    score++;
+  }
+
+  // Show revise button if there are wrong words
+  document.getElementById('revise-btn').style.display = wrongWords.length > 0 ? 'inline-block' : 'none';
+  nextBtn.disabled = false;
+  checkBtn.disabled = true;
+  document.getElementById("answer").disabled = true;
+  updateScoreStreak();
+    document.getElementById('revise-btn').onclick = function() {
+      if (wrongWords.length === 0) return;
+      revising = true;
+      reviseWords = [...wrongWords];
+      // Do not reset score/total; continue overall scoring
+      document.getElementById('revise-btn').style.display = 'none';
+      nextWord();
+      };
+    }
+
+    function typeWriter(text, i = 0) {
+      const el = document.getElementById("armenian");
+      if (i < text.length) {
+        el.innerHTML += text.charAt(i);
+        setTimeout(() => typeWriter(text, i + 1), 50);
+      } else {
+        el.innerHTML = text; // Ensure full text is displayed at the end
+      }
+    }
+
+    function playClick() {
+      const audio = new Audio('click.mp3');
+      audio.play();
+    }
+    function playCorrect() {
+      const audio = new Audio('correct.mp3');
+      audio.play();
+    }
+    function playWrong() {
+      const audio = new Audio('wrong.mp3');
+      audio.play();
+    }
+
+// Hook up Apply Lessons button
+(function initLessonsUI(){
+  const applyBtn = document.getElementById('apply-lesson-btn');
+  const input = document.getElementById('lesson-input');
+  const activeEl = document.getElementById('active-lessons');
+  const backBtn = document.getElementById('go-back-btn');
+  if (applyBtn && input) {
+    applyBtn.addEventListener('click', () => {
+      const text = (input.value || '').trim();
+      const parsed = parseLessonsInput(text);
+      if (text && parsed.length === 0) {
+        activeEl.textContent = 'Invalid lesson input. Use 1-42, ranges like 3-20, or comma-separated like 1,4,10-12';
+        return;
+      }
+      applyLessonsFilter(parsed);
+    });
+    // Enter key applies too
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        applyBtn.click();
+      }
+    });
+  }
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      // Clear input and reset to all lessons
+      input.value = '';
+      applyLessonsFilter(null);
+    });
+  }
+  // Default: all lessons
+  applyLessonsFilter(null);
+})();
+
+// Initialize
+document.getElementById("armenian").innerText = "Press 'Next Word' to start";
+document.getElementById("answer").disabled = true;
+document.getElementById('revise-btn').style.display = 'none';
+updateScoreStreak();
+  </script>
+</body>
+</html>

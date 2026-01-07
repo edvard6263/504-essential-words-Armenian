@@ -1,0 +1,111 @@
+/* mobile.css */
+@media (max-width: 600px) {
+  .result-correct {
+    color: #14532d;
+    background: #e8f5e9;
+    border-radius: 8px;
+    padding: 8px 0;
+    box-shadow: 0 2px 8px #14532d22;
+    animation: resultAppear 0.5s cubic-bezier(.4,2,.3,1);
+  }
+  .result-info {
+    color: #1e3a8a;
+    background: #e3f2fd;
+    border-radius: 8px;
+    padding: 8px 0;
+    box-shadow: 0 2px 8px #1e3a8a22;
+    animation: resultAppear 0.5s cubic-bezier(.4,2,.3,1);
+  }
+  .result-wrong {
+    color: #7f1d1d;
+    background: #ffebee;
+    border-radius: 8px;
+    padding: 8px 0;
+    box-shadow: 0 2px 8px #7f1d1d22;
+    animation: resultAppear 0.5s cubic-bezier(.4,2,.3,1);
+  }
+  @keyframes resultAppear {
+    0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+    80% { opacity: 1; transform: scale(1.05) translateY(-2px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+ body {
+  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  color: #fff;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  transition: background 0.5s;
+ }
+
+  .card {
+    width: 94vw;
+    padding: 7vw 4vw 5vw 4vw;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    margin: 4vw auto;
+    box-sizing: border-box;
+    background: rgba(30,30,30,0.95);
+    backdrop-filter: blur(2px);
+    transition: box-shadow 0.3s, background 0.3s;
+  }
+
+  #armenian {
+    font-size: 8vw;
+    margin-bottom: 5vw;
+    color: #ffd700;
+    font-weight: 700;
+    letter-spacing: 0.5vw;
+    text-shadow: 0 2px 8px #000a;
+    transition: color 0.3s;
+  }
+
+  input {
+    width: 90vw;
+    max-width: 320px;
+    font-size: 5vw;
+    padding: 3vw;
+    border-radius: 12px;
+    margin: 3vw auto 4vw auto;
+    box-sizing: border-box;
+    display: block;
+    border: 1px solid #444;
+    background: #222;
+    color: #fff;
+    transition: border-color 0.2s, background 0.3s;
+  }
+  input:focus {
+    border-color: #ffd700;
+    outline: none;
+    background: #333;
+  }
+
+  button {
+    width: 90vw;
+    max-width: 320px;
+    padding: 3vw 0;
+    font-size: 5vw;
+    font-weight: 600;
+    border-radius: 12px;
+    margin-bottom: 2vw;
+    border: none;
+    background: linear-gradient(90deg, #111 60%, #333 100%);
+    color: #ffd700;
+    box-shadow: 0 2px 8px #000a;
+    letter-spacing: 0.2vw;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  }
+  button:hover {
+    background: linear-gradient(90deg, #ffd700 60%, #333 100%);
+    color: #111;
+    box-shadow: 0 4px 16px #ffd70044;
+  }
+
+  #result {
+    font-size: 16px;
+    margin-top: 20px;
+    min-height: 32px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px #000a;
+    transition: color 0.3s;
+  }
+}
+/* End of mobile.css */
