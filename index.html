@@ -4,146 +4,202 @@
   <meta charset="UTF-8">
   <title>504 essential words </title>
   <style>
-    #bg-transition {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      pointer-events: none;
-      z-index: 9999;
-      background: white;
-      opacity: 0;
-      transition: opacity 0.7s cubic-bezier(.4,2,.3,1);
-    }
-    .result-correct {
-      color: white;
-      background: #26ac5c;
-      border-radius: 8px;
-      padding: 8px 0;
-      box-shadow: 0 2px 8px #14532d22;
-      animation: resultAppear 0.5s cubic-bezier(.4,2,.3,1);
-    }
-    .result-info {
-      color: white;
-      background: #3565eb;
-      border-radius: 8px;
-      padding: 8px 0;
-      box-shadow: 0 2px 8px #1e3a8a22;
-      animation: resultAppear 0.5s cubic-bezier(.4,2,.3,1);
-    }
-    .result-wrong {
-      color: white;
-      background: #e43434;
-      border-radius: 8px;
-      padding: 8px 0;
-      box-shadow: 0 2px 8px #7f1d1d22;
-      animation: resultAppear 0.5s cubic-bezier(.4,2,.3,1);
-    }
-    @keyframes resultAppear {
-      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-      80% { opacity: 1; transform: scale(1.05) translateY(-2px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    @keyframes buttonPress {
-      0% { transform: scale(1); }
-      50% { transform: scale(0.95); }
-      100% { transform: scale(1); }
-    }
     body {
-      width: 100vw;
-      height: 100vh;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+  width: 100vw;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #232526 0%, #414345 100%);
   color: #fff;
-  transition: background 0.7s cubic-bezier(.4,2,.3,1), color 0.7s cubic-bezier(.4,2,.3,1);
-    }
-    .card {
-      background: rgba(30,30,30,0.95);
-      padding: 60px 24px 40px 24px;
-      border-radius: 18px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-      text-align: center;
-      max-width: 450px;
-      width: 100%;
-      margin: 0 auto;
-      box-sizing: border-box;
-      backdrop-filter: blur(2px);
-      transition: box-shadow 0.3s, background 0.3s;
-    }
-    #armenian {
-      font-size: 38px;
-      margin-bottom: 30px;
-      color: #ffd700;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 8px #000a;
-      transition: color 0.3s;
-    }
-    input {
-      padding: 20px;
-      width: 80%;
-      border: 1px solid #444;
-      border-radius: 12px;
-      margin: 10px auto 20px auto;
-      box-sizing: border-box;
-      display: block;
-      background: #222;
-      color: #fff;
-      font-size: 20px;
-      transition: border-color 0.2s, background 0.3s;
-    }
-    input:focus {
-      border-color: #ffd700;
-      outline: none;
-      background: #333;
-    }
-    button {
-      margin-top: 15px;
-      padding: 20px 0;
-      border: none;
-      background: linear-gradient(90deg, #111 60%, #333 100%);
-      color: #ffd700;
-      font-size: 20px;
-      font-weight: 600;
-      border-radius: 12px;
-      width: 80%;
-      max-width: 320px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 8px #000a;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-      will-change: transform;
-    }
-    button:hover {
-      background: linear-gradient(90deg, #ffd700 60%, #333 100%);
-      color: #111;
-      box-shadow: 0 4px 16px #ffd70044;
-      transform: scale(1.05);
-    }
-    button:active {
-      animation: buttonPress 0.2s;
-    }
-    #result {
-      margin-top: 25px;
-      font-weight: bold;
-      color: #ffd700;
-      min-height: 32px;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 8px #000a;
-      transition: color 0.3s;
-    }
-    #bg-transition {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      pointer-events: none;
-      z-index: 9999;
-      background: white;
-      opacity: 0;
-      transition: opacity 0.7s cubic-bezier(.4,2,.3,1);
-    }
+  margin: 0;
+  transition: background 0.7s cubic-bezier(.4, 2, .3, 1), color 0.7s cubic-bezier(.4, 2, .3, 1);
+}
+
+.card {
+  background: rgba(30, 30, 30, 0.95);
+  padding: 60px 24px 40px 24px;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  max-width: 450px;
+  width: 90%;
+  margin: 20px auto;
+  box-sizing: border-box;
+  backdrop-filter: blur(2px);
+  transition: box-shadow 0.3s, background 0.3s;
+}
+
+#armenian {
+  font-size: 38px;
+  margin-bottom: 30px;
+  color: #ffd700;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px #000a;
+  transition: color 0.3s;
+  word-wrap: break-word;
+}
+
+input {
+  padding: 20px;
+  width: 80%;
+  border: 1px solid #444;
+  border-radius: 12px;
+  margin: 10px auto 20px auto;
+  box-sizing: border-box;
+  display: block;
+  background: #222;
+  color: #fff;
+  font-size: 20px;
+  transition: border-color 0.2s, background 0.3s;
+}
+
+input:focus {
+  border-color: #ffd700;
+  outline: none;
+  background: #333;
+}
+
+button {
+  margin-top: 15px;
+  padding: 20px 0;
+  border: none;
+  background: linear-gradient(90deg, #111 60%, #333 100%);
+  color: #ffd700;
+  font-size: 20px;
+  font-weight: 600;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 320px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px #000a;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  will-change: transform;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #ffd700 60%, #333 100%);
+  color: #111;
+  box-shadow: 0 4px 16px #ffd70044;
+  transform: scale(1.05);
+}
+
+button:active {
+  animation: buttonPress 0.2s;
+}
+
+#result {
+  margin-top: 25px;
+  font-weight: bold;
+  color: #ffd700;
+  min-height: 32px;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px #000a;
+  transition: color 0.3s;
+}
+
+/* Animations & Results */
+#bg-transition {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(.4, 2, .3, 1);
+}
+
+.result-correct {
+  color: white;
+  background: #26ac5c;
+  border-radius: 8px;
+  padding: 8px 0;
+  box-shadow: 0 2px 8px #14532d22;
+  animation: resultAppear 0.5s cubic-bezier(.4, 2, .3, 1);
+}
+
+.result-info {
+  color: white;
+  background: #3565eb;
+  border-radius: 8px;
+  padding: 8px 0;
+  box-shadow: 0 2px 8px #1e3a8a22;
+  animation: resultAppear 0.5s cubic-bezier(.4, 2, .3, 1);
+}
+
+.result-wrong {
+  color: white;
+  background: #e43434;
+  border-radius: 8px;
+  padding: 8px 0;
+  box-shadow: 0 2px 8px #7f1d1d22;
+  animation: resultAppear 0.5s cubic-bezier(.4, 2, .3, 1);
+}
+
+@keyframes resultAppear {
+  0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+  80% { opacity: 1; transform: scale(1.05) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes buttonPress {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+/* --- Mobile / Responsive Fixes --- */
+@media (max-width: 600px) {
+  
+  /* Make the card fit the screen */
+  .card {
+    width: 94vw;
+    padding: 30px 15px;
+    margin: 10px auto;
+  }
+
+  /* Adjust Text Size */
+  #armenian {
+    font-size: 32px; /* Readable fixed size instead of vw */
+    margin-bottom: 20px;
+  }
+
+  /* Full width inputs/buttons */
+  input, button {
+    width: 100%;
+    max-width: none;
+    font-size: 18px;
+    padding: 15px;
+  }
+
+  /* Fix the Score/Theme area spacing */
+  #score-streak {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  /* --- CRITICAL: Stack the Correct/Wrong lists vertically --- */
+  /* This targets the container holding the two lists */
+  .card > div:last-child {
+    flex-direction: column !important;
+    margin-top: 20px !important;
+  }
+
+  /* Make the lists full width and taller */
+  #correct-list, #wrong-list {
+    width: 100% !important;
+    margin-bottom: 15px;
+    height: 150px !important; /* Slightly taller for easier scrolling */
+  }
+
+  #result {
+    font-size: 16px;
+  }
   </style>
 
 </head>
